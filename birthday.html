@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Nirisha</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --neon-pink:#ff4fd8;
+    --neon-glow:#ff8ae2;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{
+    height:100%;
+    background:#1a0014;
+    font-family:'Dancing Script', cursive;
+    overflow:hidden;
+  }
+
+  /* ---------- STAGE (16:9, fits any screen) ---------- */
+  #stage-wrap{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#0d000a;
+  }
+  #stage{
+    position:relative;
+    width:min(100vw, 177.78vh);
+    height:min(100vh, 56.25vw);
+    overflow:hidden;
+    box-shadow:0 0 60px rgba(255,79,216,0.35);
+  }
+  @media (max-aspect-ratio: 9/16){
+    #stage{ width:177.78vh; height:100vh; }
+  }
+
+  /* ---------- Pink marble background ---------- */
+  .page{
+    position:absolute;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(255,255,255,0.5), transparent 40%),
+      radial-gradient(ellipse at 80% 30%, rgba(255,200,230,0.4), transparent 45%),
+      radial-gradient(ellipse at 50% 80%, rgba(255,150,210,0.35), transparent 50%),
+      linear-gradient(135deg, #ffd6ee 0%, #ffb6de 25%, #ff9ad6 50%, #ffc9e8 75%, #ffe1f5 100%);
+    background-size:200% 200%;
+    animation: marbleShift 18s ease infinite;
+  }
+  .page.active{display:flex;}
+  @keyframes marbleShift{
+    0%{background-position:0% 0%;}
+    50%{background-position:100% 100%;}
+    100%{background-position:0% 0%;}
+  }
+  .page::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(120deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 2px, transparent 2px, transparent 40px),
+      repeating-linear-gradient(35deg, rgba(255,255,255,0.10) 0px, rgba(255,255,255,0.10) 1px, transparent 1px, transparent 60px);
+    mix-blend-mode:overlay;
+    pointer-events:none;
+  }
+
+  /* ---------- Text ---------- */
+  .textbox{
+    position:relative;
+    z-index:20;
+    max-width:78%;
+    text-align:center;
+    padding:2.6em 1.8em;
+    line-height:2.1;
+    letter-spacing:0.5px;
+  }
+  .neon-font{ font-family:'Great Vibes', cursive; }
+  .dancing-font{ font-family:'Dancing Script', cursive; font-weight:700; }
+  .neon-text{
+    color:#fff;
+    text-shadow:
+      0 0 5px #fff,
+      0 0 12px var(--neon-glow),
+      0 0 25px var(--neon-pink),
+      0 0 45px var(--neon-pink),
+      0 0 70px #ff2fc9;
+    animation: flicker 3.2s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,19%,21%,23%,55%,57%,100%{ opacity:1; }
+    20%,22%,56%{ opacity:0.82; }
+  }
+  #page1 .neon-text{ font-size:clamp(1.6em, 4.4vw, 3.4em); }
+  .page:not(#page1) .neon-text{ font-size:clamp(1.1em, 2.6vw, 2em); }
+
+  /* ---------- Center-to-edge photo/video collage (fills all sides behind text) ---------- */
+  .orbit-layer{ position:absolute; inset:0; z-index:1; overflow:hidden; }
+  .collage-tile{
+    position:absolute;
+    aspect-ratio:16/9;
+    border-radius:10px;
+    overflow:hidden;
+    border:2px solid rgba(255,255,255,0.7);
+    box-shadow:0 0 16px rgba(255,60,190,0.5);
+    background:rgba(60,0,35,0.35);
+    opacity:0;
+    transform:translate(var(--dx), var(--dy)) scale(0.12);
+  }
+  .collage-tile.grow{
+    animation: tileFromCenter 1.3s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .collage-tile img, .collage-tile video{
+    width:100%; height:100%; object-fit:contain; display:block;
+  }
+  .missing-tile{
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    background:rgba(120,0,60,0.55);
+    color:#fff;
+    font-family:'Dancing Script', cursive;
+    font-size:0.85em;
+    line-height:1.3;
+    padding:4px;
+    word-break:break-all;
+  }
+  @keyframes tileFromCenter{
+    0%{ opacity:0; transform:translate(var(--dx), var(--dy)) scale(0.12); }
+    55%{ opacity:1; }
+    100%{ opacity:0.92; transform:translate(0,0) scale(1); }
+  }
+  /* soft pink veil above the collage on every page so the text stays readable */
+  .page::after{
+    content:"";
+    position:absolute; inset:0; z-index:8;
+    background:radial-gradient(ellipse at center, rgba(255,220,240,0.62) 0%, rgba(255,180,225,0.40) 45%, rgba(255,150,215,0.22) 100%);
+    pointer-events:none;
+  }
+  .textbox{
+    background:rgba(255,255,255,0.18);
+    backdrop-filter:blur(2px);
+    border-radius:24px;
+  }
+
+  /* ---------- Decorative hearts / cake / kiss accents ---------- */
+  .deco{
+    position:absolute;
+    font-size:1.8em;
+    z-index:25;
+    pointer-events:none;
+    text-shadow:0 0 10px rgba(255,79,216,0.8);
+    animation: decoBounce 2.6s ease-in-out infinite;
+  }
+  @keyframes decoBounce{
+    0%,100%{ transform:translateY(0) scale(1); }
+    50%{ transform:translateY(-8px) scale(1.12); }
+  }
+  .deco-heart-tl{ top:-14px; left:-10px; animation-delay:0s; }
+  .deco-heart-tr{ top:-14px; right:-10px; animation-delay:0.6s; }
+  .deco-heart-bl{ bottom:-14px; left:-10px; animation-delay:1.2s; }
+  .deco-heart-br{ bottom:-14px; right:-10px; animation-delay:1.8s; }
+  .deco-cake{ top:-26px; left:50%; transform:translateX(-50%); font-size:2.1em; animation-delay:0.3s; }
+  .deco-kiss-l{ top:40%; left:-24px; animation-delay:0.9s; }
+  .deco-kiss-r{ top:40%; right:-24px; animation-delay:1.5s; }
+
+  /* ---------- Floating love hearts (all pages) ---------- */
+  .heart-fx{
+    position:absolute;
+    bottom:-40px;
+    font-size:1.6em;
+    color:var(--neon-pink);
+    text-shadow:0 0 8px #ff8ae2;
+    z-index:30;
+    pointer-events:none;
+    animation:heartRise linear forwards;
+  }
+  @keyframes heartRise{
+    0%{ transform:translateY(0) scale(0.8) rotate(0deg); opacity:0.9;}
+    100%{ transform:translateY(-115vh) scale(1.3) rotate(25deg); opacity:0;}
+  }
+
+  /* ---------- Nav buttons ---------- */
+  .nav-btns{
+    position:absolute; bottom:3%; left:0; right:0;
+    display:flex; justify-content:center; gap:16px; z-index:50;
+  }
+  .nav-btns button{
+    font-family:'Dancing Script', cursive;
+    font-weight:700; font-size:1.1em;
+    padding:10px 26px;
+    border:2px solid #fff;
+    border-radius:30px;
+    background:rgba(255,79,216,0.75);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 0 14px rgba(255,79,216,0.6);
+  }
+  .nav-btns button:hover{ background:rgba(255,79,216,0.95); }
+  .page-counter{
+    position:absolute; top:3%; right:4%;
+    color:#fff;
+    font-family:'Dancing Script', cursive;
+    font-size:1em;
+    text-shadow:0 0 6px #ff4fd8;
+    z-index:50;
+  }
+
+  /* ---------- Page 2 special ---------- */
+  .gift-row{ position:relative; z-index:20; display:flex; gap:60px; margin-top:1.4em; }
+  .gift-photo{
+    width:150px;height:150px;
+    border-radius:16px;
+    overflow:hidden;
+    border:4px solid #fff;
+    cursor:pointer;
+    box-shadow:0 0 20px rgba(255,60,190,0.6);
+    transition:transform 0.25s;
+  }
+  .gift-photo:hover{ transform:scale(1.06) rotate(-2deg); }
+  .gift-photo img{ width:100%;height:100%;object-fit:cover; }
+  .gift-mystery{
+    background:
+      linear-gradient(135deg, #ff8ac6, #ff4fd8);
+    border:3px dashed rgba(255,255,255,0.9);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  .gift-label{
+    font-family:'Dancing Script', cursive;
+    font-weight:700;
+    font-size:1.15em;
+    color:#fff;
+    text-shadow:0 0 8px rgba(0,0,0,0.35);
+    padding:0.3em;
+  }
+
+  .modal-overlay{
+    position:absolute; inset:0;
+    background:rgba(30,0,20,0.85);
+    display:none;
+    align-items:center; justify-content:center;
+    z-index:100; flex-direction:column; gap:16px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-overlay img{
+    max-width:65%; max-height:60%;
+    border-radius:14px;
+    border:5px solid #fff;
+    box-shadow:0 0 40px #ff4fd8;
+  }
+  .modal-caption{
+    font-family:'Dancing Script', cursive;
+    font-weight:700; font-size:1.6em;
+    color:#fff;
+    text-shadow:0 0 10px #ff4fd8;
+  }
+  .modal-close{
+    margin-top:6px; padding:8px 22px;
+    border-radius:24px; border:2px solid #fff;
+    background:rgba(255,79,216,0.8);
+    color:#fff; cursor:pointer;
+    font-family:'Dancing Script', cursive; font-size:1em;
+  }
+
+  /* ---------- Page 11 heart ---------- */
+  #page11{ background:radial-gradient(circle at center, #2a0020, #10000c 80%); }
+  .fullbg-layer{
+    position:absolute; inset:0; z-index:1; overflow:hidden;
+    display:grid;
+    grid-template-columns:repeat(var(--cols, 8), 1fr);
+    opacity:0.9;
+  }
+  .fullbg-cell{
+    aspect-ratio:1/1;
+    overflow:hidden;
+  }
+  .fullbg-cell img, .fullbg-cell video{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  #heartCanvasWrap{ position:relative; width:80%; height:80%; z-index:10; }
+  .heart-word{
+    position:absolute;
+    font-family:'Dancing Script', cursive;
+    font-weight:700;
+    color:#fff;
+    text-shadow:0 0 8px #ff4fd8, 0 0 18px #ff2fc9;
+    white-space:nowrap;
+    animation:heartPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes heartPulse{
+    0%,100%{ transform:translate(-50%,-50%) scale(0.9); opacity:0.7; }
+    50%{ transform:translate(-50%,-50%) scale(1.15); opacity:1; }
+  }
+  .heart-photo{
+    position:absolute;
+    width:70px;height:70px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid #fff;
+    box-shadow:0 0 14px #ff4fd8;
+    animation: floatSmall 4s ease-in-out infinite;
+  }
+  .heart-photo img{ width:100%;height:100%;object-fit:cover; }
+  @keyframes floatSmall{
+    0%,100%{ transform:translate(-50%,-50%) translateY(0); }
+    50%{ transform:translate(-50%,-50%) translateY(-10px); }
+  }
+
+  #soundToggle{
+    position:absolute; top:3%; left:4%; z-index:60;
+    background:rgba(255,79,216,0.75);
+    border:2px solid #fff;
+    border-radius:50%;
+    width:44px;height:44px;
+    color:#fff; font-size:1.2em; cursor:pointer;
+  }
+
+  #confettiCanvas{
+    position:fixed; inset:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    z-index:95;
+  }
+
+  #startScreen{
+    position:absolute; inset:0;
+    z-index:200;
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.5), transparent 45%),
+      linear-gradient(135deg, #ffb6de 0%, #ff8ac6 50%, #ffd6ee 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  #startText{
+    font-family:'Great Vibes', cursive;
+    font-size:clamp(1.6em, 5vw, 3em);
+    color:#fff;
+    text-align:center;
+    padding:1em;
+    text-shadow:
+      0 0 5px #fff, 0 0 12px #ff8ae2, 0 0 25px #ff4fd8, 0 0 45px #ff2fc9;
+    animation: flicker 3.2s ease-in-out infinite;
+  }
+  #startScreen.hidden{
+    display:none;
+  }
+</style>
+</head>
+<body>
+
+<div id="stage-wrap">
+<div id="stage">
+
+  <div id="startScreen">
+    <div id="startText">Tap to open your surprise 💗</div>
+  </div>
+
+  <button id="soundToggle" title="Toggle sound">🔊</button>
+
+  <section class="page active" id="page1" data-folder="folder1" data-count="8">
+    <div class="fullbg-layer" id="bg1"></div>
+    <div class="orbit-layer" id="orbit1"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <div class="neon-font neon-text">HAPPIEST BORN DAY TO YOU MY LOVEEEEEE</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page2">
+    <div class="orbit-layer" id="orbit2"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span>
+      <div class="dancing-font neon-text">LETS OPEN THE GIFTS</div>
+      <div class="gift-row">
+        <div class="gift-photo gift-mystery" id="giftPhoto1"><span class="gift-label">LOVEE 💗</span></div>
+        <div class="gift-photo gift-mystery" id="giftPhoto2"><span class="gift-label">MOMMYYY 💋</span></div>
+      </div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+    <div class="modal-overlay" id="giftModal">
+      <img id="giftModalImg" alt="Surprise Gift">
+      <button class="modal-close" onclick="closeModal('giftModal')">Close</button>
+    </div>
+    <div class="modal-overlay" id="mommyModal">
+      <img id="mommyModalImg" alt="mommy">
+      <div class="modal-caption">MY MOMMYYYYY PLEASE 💋💋</div>
+      <button class="modal-close" onclick="closeModal('mommyModal')">Close</button>
+    </div>
+  </section>
+
+  <section class="page" id="page3" data-folder="folder2" data-count="8">
+    <div class="fullbg-layer" id="bg3"></div>
+    <div class="orbit-layer" id="orbit3"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <div class="dancing-font neon-text">HAPPIEST BORN DAY TO MY LOVEEE IT'S THE DAY WHEN YOU ARE BORN WITH THE PURPOSE OF A MARRIAGE WITH ME FOR THE EVERY LIFESPAWN I FEEL THE LUCKIEST ONE IN THIS UNIVERSE BY GETTING YOUR LOVE AND REALIZING THAT IAM ONLY YOURS</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page4" data-folder="folder3" data-count="8">
+    <div class="fullbg-layer" id="bg4"></div>
+    <div class="orbit-layer" id="orbit4"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span>
+      <div class="dancing-font neon-text">WE ARE LOVING LIVING STAYING ENJOYING TOGETHER WITH EACH OTHER EVERYDAY AND AT EVERY STAGE OF THE LIFE AT ANY TIME AND AT ANY PLACE</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page5" data-folder="folder4" data-count="8">
+    <div class="fullbg-layer" id="bg5"></div>
+    <div class="orbit-layer" id="orbit5"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span>
+      <div class="dancing-font neon-text">NOW MY LOVE WE BOTH HAVE TURN 19 WE BOTH HAVE ENTER OUR MATURITY AGE TOGETHER WHERE MANY DIFFICULT PHASES WILL COME BUT IAM AND I WILL PROMISE THAT I WILL BE WITH YOU AND STAND WITH YOU AT EVERY STAGE AT EVERY PHASE OF LIFE WHERE WE WILL ADOPT EVERYTHING AND LIVE HAPPILY WITH EACH OTHER</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page6" data-folder="folder5" data-count="4" data-videos="8">
+    <div class="fullbg-layer" id="bg6"></div>
+    <div class="orbit-layer" id="orbit6"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <div class="dancing-font neon-text">HAPPIEST BIRTHDAY TO MY ONE AND ONLY DIVINERY LOVELY GIRL EXISTED AND BORN ON THE UNIVERSE TILL THE EXISTENCE. YOU ARE MY DIVINERY LOVE WHOSE EVERY BEHAVIOURS AND EVRYTHING YOU HAVE AND CONTAIN ON YOU ARE HEAVENLY AND UNEXPLAINERILY BEAUTIFUL THAT HEAVEN COULDNOT DEFINE</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page7" data-folder="folder7" data-count="8">
+    <div class="fullbg-layer" id="bg7"></div>
+    <div class="orbit-layer" id="orbit7"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span>
+      <div class="dancing-font neon-text">FROM NOW ON IF YOU EVER FEEL AND SAID ANY BAD ABOUT YOU WE WILL EXPERIENCED AND GET TO KNOW ABOUT WHAT THE MOVIE FEELS IN REAL LIFE THAT WE WATCHED TOGETHER. SO UNDERSTOOD</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page8" data-folder="folder6" data-count="8">
+    <div class="fullbg-layer" id="bg8"></div>
+    <div class="orbit-layer" id="orbit8"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <div class="dancing-font neon-text">NOW WE ARE HEADING TO ANOTHER AGE SO LETS MOVE TOGETHER BY LOVING ENJOYING AND LIVING TOGETHER TILL OUR LIFETIME AND UNTIL OUR EXISTENCE</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page9" data-folder="folder8" data-count="8">
+    <div class="fullbg-layer" id="bg9"></div>
+    <div class="orbit-layer" id="orbit9"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <span class="deco deco-kiss-l">💋</span><span class="deco deco-kiss-r">💋</span>
+      <div class="dancing-font neon-text">HAPPY BIRTHDAY MY MOMMMYYYYYYYYYYYY 💋💋</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page10" data-folder="folder9" data-count="8">
+    <div class="fullbg-layer" id="bg10"></div>
+    <div class="orbit-layer" id="orbit10"></div>
+    <div class="textbox">
+      <span class="deco deco-heart-tl">💗</span><span class="deco deco-heart-tr">💕</span><span class="deco deco-cake">🎂</span>
+      <div class="dancing-font neon-text">HAPPY BIRTHDAY MY LOVELY LOVE. LET'S COMPLETE OUR EVERYLIFETIME TOGETHER AND LETS BUILD US LETS BUILD OUR FUTURE AND LETS GROW OLD TOGETHER MY LOVELY LOVEE NIRISHA</div>
+      <span class="deco deco-heart-bl">💓</span><span class="deco deco-heart-br">💖</span>
+    </div>
+  </section>
+
+  <section class="page" id="page11">
+    <div id="page11Bg" class="fullbg-layer"></div>
+    <div id="heartCanvasWrap"></div>
+  </section>
+
+  <div class="page-counter" id="pageCounter">1 / 11</div>
+
+  <div class="nav-btns">
+    <button id="prevBtn" onclick="goPage(-1)">⬅ Prev</button>
+    <button id="nextBtn" onclick="goPage(1)">Next ➡</button>
+  </div>
+
+</div>
+</div>
+
+<canvas id="confettiCanvas"></canvas>
+
+<audio id="clickSound" preload="auto"><source src="sounds/click.mp3" type="audio/mpeg"></audio>
+<audio id="giftSound" preload="auto"><source src="sounds/congrats.mp3" type="audio/mpeg"></audio>
+<audio id="bgMusic" preload="auto" loop></audio>
+
+<script>
+/* Put your "nirisha" folder, a "sounds" folder, AND "song.mp4" (your
+   background song) all next to this HTML file. See HOW-TO-SETUP.txt
+   for full instructions. */
+const BASE = "nirisha/";
+let currentPage = 1;
+const totalPages = 11;
+let soundOn = true;
+
+/* Tries several common extension variations automatically, so a photo
+   saved as .jpeg/.JPG/.png (instead of exactly .jpg) still shows up
+   instead of silently failing. */
+function setMediaWithFallback(el, basePath, exts, onAllFail){
+  let i = 0;
+  function tryNext(){
+    if(i >= exts.length){ if(onAllFail) onAllFail(); return; }
+    el.src = basePath + '.' + exts[i];
+    i++;
+  }
+  el.onerror = tryNext;
+  tryNext();
+}
+const PHOTO_EXTS = ['jpg','JPG','jpeg','JPEG','png','PNG'];
+const VIDEO_EXTS = ['mp4','MP4','mov','MOV'];
+
+/* Instead of silently hiding a tile when a file can't be found, show
+   a small visible label naming exactly which file is missing - makes
+   it obvious at a glance which one still needs fixing. */
+function showPlaceholder(tile, basePath){
+  tile.style.display = '';
+  tile.classList.add('grow');
+  const fileName = basePath.split('/').pop();
+  tile.innerHTML = '<div class="missing-tile">' + fileName + '<br>not found</div>';
+}
+
+/* Builds a dynamic photo/video collage that grows outward from the
+   center of the page to fill all sides (tiles hugging the edges),
+   with the text staying readable on top. Each tile position cycles
+   through the folder's photos/videos, each time animating in fresh
+   from the center. */
+const TILE_SLOTS = [
+  {left:'4%',  top:'6%',  w:'24%'}, // top-left
+  {left:'72%', top:'6%',  w:'24%'}, // top-right
+  {left:'4%',  top:'68%', w:'24%'}, // bottom-left
+  {left:'72%', top:'68%', w:'24%'}, // bottom-right
+  {left:'38%', top:'2%',  w:'22%'}, // top-center
+  {left:'38%', top:'80%', w:'22%'}, // bottom-center
+  {left:'2%',  top:'38%', w:'20%'}, // left-center
+  {left:'78%', top:'38%', w:'20%'}  // right-center
+];
+
+function buildCollage(orbitId, folder, photoCount, videoCount){
+  const layer = document.getElementById(orbitId);
+  if(!layer) return;
+
+  const sources = [];
+  for(let i=1;i<=photoCount;i++){
+    sources.push({type:'img', base: BASE + folder + '/photo' + i});
+  }
+  if(videoCount){
+    for(let i=1;i<=videoCount;i++){
+      sources.push({type:'video', base: BASE + folder + '/video' + i});
+    }
+  }
+  if(sources.length === 0) return;
+
+  const stageRect = document.getElementById('stage').getBoundingClientRect();
+
+  TILE_SLOTS.forEach(function(slot, slotIndex){
+    const tile = document.createElement('div');
+    tile.className = 'collage-tile';
+    tile.style.left = slot.left;
+    tile.style.top = slot.top;
+    tile.style.width = slot.w;
+
+    const leftPct = parseFloat(slot.left) + parseFloat(slot.w)/2;
+    const topPct = parseFloat(slot.top) + (parseFloat(slot.w)*9/16)/2;
+    const dxPx = (50 - leftPct)/100 * stageRect.width;
+    const dyPx = (50 - topPct)/100 * stageRect.height;
+    tile.style.setProperty('--dx', dxPx + 'px');
+    tile.style.setProperty('--dy', dyPx + 'px');
+
+    layer.appendChild(tile);
+
+    let idx = slotIndex % sources.length;
+    function showNext(){
+      tile.classList.remove('grow');
+      tile.innerHTML = '';
+      const src = sources[idx];
+      let media;
+      if(src.type === 'video'){
+        media = document.createElement('video');
+        media.autoplay = true;
+        media.loop = true;
+        media.muted = true;
+        media.playsInline = true;
+        media.controls = false;
+        setMediaWithFallback(media, src.base, VIDEO_EXTS, function(){ showPlaceholder(tile, src.base); });
+      } else {
+        media = document.createElement('img');
+        setMediaWithFallback(media, src.base, PHOTO_EXTS, function(){ showPlaceholder(tile, src.base); });
+      }
+      tile.appendChild(media);
+      void tile.offsetWidth; // restart animation
+      tile.classList.add('grow');
+      idx = (idx + 1) % sources.length;
+    }
+    showNext();
+    setInterval(showNext, 4500 + slotIndex*300);
+  });
+}
+
+/* Reusable: builds a full-screen wall of equal-sized square tiles from
+   a folder's photos (and videos, if any), used as a page background. */
+function buildSquareGrid(containerId, folder, photoCount, videoCount){
+  const bg = document.getElementById(containerId);
+  if(!bg) return;
+
+  const sources = [];
+  for(let i=1;i<=photoCount;i++){
+    sources.push({type:'img', base: BASE + folder + '/photo' + i});
+  }
+  if(videoCount){
+    for(let i=1;i<=videoCount;i++){
+      sources.push({type:'video', base: BASE + folder + '/video' + i});
+    }
+  }
+  if(sources.length === 0) return;
+
+  const stageRect = document.getElementById('stage').getBoundingClientRect();
+  const aspect = stageRect.width / stageRect.height;
+  let cols = Math.max(4, Math.round(Math.sqrt(sources.length * aspect)));
+  const rows = Math.ceil(sources.length / cols);
+  const tilesNeeded = cols * rows;
+  bg.style.setProperty('--cols', cols);
+
+  for(let t=0; t<tilesNeeded; t++){
+    const src = sources[t % sources.length];
+    const cell = document.createElement('div');
+    cell.className = 'fullbg-cell';
+    let media;
+    if(src.type === 'video'){
+      media = document.createElement('video');
+      media.autoplay = true;
+      media.loop = true;
+      media.muted = true;
+      media.playsInline = true;
+      media.controls = false;
+    } else {
+      media = document.createElement('img');
+    }
+    setMediaWithFallback(media, src.base, src.type === 'video' ? VIDEO_EXTS : PHOTO_EXTS, function(){ cell.style.visibility='hidden'; });
+    cell.appendChild(media);
+    bg.appendChild(cell);
+  }
+}
+
+document.querySelectorAll('.page[data-folder]').forEach(pg=>{
+  const folder = pg.dataset.folder;
+  const count = parseInt(pg.dataset.count, 10);
+  const videoCount = pg.dataset.videos ? parseInt(pg.dataset.videos, 10) : 0;
+  const bgLayer = pg.querySelector('.fullbg-layer');
+  if(bgLayer) buildSquareGrid(bgLayer.id, folder, count, videoCount);
+});
+
+document.querySelectorAll('.page[data-folder]').forEach(pg=>{
+  const folder = pg.dataset.folder;
+  const count = parseInt(pg.dataset.count, 10);
+  const videoCount = pg.dataset.videos ? parseInt(pg.dataset.videos, 10) : 0;
+  const orbit = pg.querySelector('.orbit-layer');
+  if(orbit) buildCollage(orbit.id, folder, count, videoCount);
+});
+
+/* ---------- Page 2 gift photos (with extension fallback) ---------- */
+setMediaWithFallback(document.getElementById('giftModalImg'), BASE + 'folder10/gift', PHOTO_EXTS);
+setMediaWithFallback(document.getElementById('mommyModalImg'), BASE + 'folder10/photo2', PHOTO_EXTS);
+
+/* ---------- Background song (tries song.mp4, then .mp3, then .m4a) ---------- */
+setMediaWithFallback(document.getElementById('bgMusic'), 'song', ['mp4','mp3','m4a','MP4','MP3']);
+
+(function(){
+  const wrap = document.getElementById('heartCanvasWrap');
+  const wordCount = 100;
+  const includeFolders = ['folder1','folder2','folder3','folder4','folder5','folder6','folder7','folder8','folder9'];
+
+  function heartPoint(t){
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t);
+    return {x, y};
+  }
+
+  for(let i=0;i<wordCount;i++){
+    const t = (i/wordCount) * Math.PI * 2;
+    const jitter = (Math.random()-0.5)*1.2;
+    const p = heartPoint(t);
+    const scale = 3.6;
+    const left = 50 + p.x*scale*0.32 + jitter;
+    const top = 50 - p.y*scale*0.32 + jitter;
+    const word = document.createElement('div');
+    word.className = 'heart-word';
+    word.textContent = 'I LOVE YOU';
+    word.style.left = left + '%';
+    word.style.top = top + '%';
+    word.style.fontSize = (0.7 + Math.random()*0.9) + 'em';
+    word.style.animationDelay = (Math.random()*2.4) + 's';
+    wrap.appendChild(word);
+  }
+
+  for(let i=0;i<includeFolders.length;i++){
+    const t = (i/includeFolders.length) * Math.PI * 2;
+    const p = heartPoint(t);
+    const scale = 3.6;
+    const left = 50 + p.x*scale*0.42;
+    const top = 50 - p.y*scale*0.42;
+    const ph = document.createElement('div');
+    ph.className = 'heart-photo';
+    ph.style.left = left + '%';
+    ph.style.top = top + '%';
+    ph.style.animationDelay = (i*0.3) + 's';
+    const img = document.createElement('img');
+    setMediaWithFallback(img, BASE + includeFolders[i] + '/photo1', PHOTO_EXTS, function(){
+      ph.innerHTML = '<div class="missing-tile" style="border-radius:50%;font-size:0.6em;">' + includeFolders[i] + '<br>photo1 missing</div>';
+    });
+    ph.appendChild(img);
+    wrap.appendChild(ph);
+  }
+})();
+
+/* ---------- Page 11 full-screen background: every photo AND video
+   from every folder, arranged as a wall of equal-sized square tiles
+   filling the whole background behind the heart animation ---------- */
+(function(){
+  const bg = document.getElementById('page11Bg');
+  const folderPhotoCounts = {
+    folder1:8, folder2:8, folder3:8, folder4:8, folder5:4,
+    folder6:8, folder7:8, folder8:8, folder9:8, folder10:2
+  };
+  const folderVideoCounts = { folder5:8 };
+
+  const sources = [];
+  Object.keys(folderPhotoCounts).forEach(function(folder){
+    for(let i=1;i<=folderPhotoCounts[folder];i++){
+      sources.push({type:'img', base: BASE + folder + '/photo' + i});
+    }
+  });
+  Object.keys(folderVideoCounts).forEach(function(folder){
+    for(let i=1;i<=folderVideoCounts[folder];i++){
+      sources.push({type:'video', base: BASE + folder + '/video' + i});
+    }
+  });
+  if(sources.length === 0) return;
+
+  // work out a column count so the tiles come out roughly square
+  // and fully cover the page, based on the stage's actual shape
+  const stageRect = document.getElementById('stage').getBoundingClientRect();
+  const aspect = stageRect.width / stageRect.height;
+  let cols = Math.max(4, Math.round(Math.sqrt(sources.length * aspect)));
+  const rows = Math.ceil(sources.length / cols);
+  const tilesNeeded = cols * rows;
+  bg.style.setProperty('--cols', cols);
+
+  for(let t=0; t<tilesNeeded; t++){
+    const src = sources[t % sources.length];
+    const cell = document.createElement('div');
+    cell.className = 'fullbg-cell';
+    let media;
+    if(src.type === 'video'){
+      media = document.createElement('video');
+      media.autoplay = true;
+      media.loop = true;
+      media.muted = true;
+      media.playsInline = true;
+      media.controls = false;
+    } else {
+      media = document.createElement('img');
+    }
+    setMediaWithFallback(media, src.base, src.type === 'video' ? VIDEO_EXTS : PHOTO_EXTS, function(){ cell.style.visibility='hidden'; });
+    cell.appendChild(media);
+    bg.appendChild(cell);
+  }
+})();
+
+/* ---------- Writing (typewriter) animation for page text ---------- */
+document.querySelectorAll('.neon-text').forEach(function(el){
+  el.dataset.original = el.textContent.trim();
+});
+function typewriteElement(el){
+  const text = el.dataset.original;
+  if(!text) return;
+  if(el._typeTimer) clearInterval(el._typeTimer);
+  el.textContent = '';
+  let i = 0;
+  const totalDuration = Math.min(4500, Math.max(1200, text.length * 28));
+  const stepTime = totalDuration / text.length;
+  el._typeTimer = setInterval(function(){
+    i++;
+    el.textContent = text.slice(0, i);
+    if(i >= text.length){ clearInterval(el._typeTimer); }
+  }, stepTime);
+}
+
+function showPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const activePage = document.getElementById('page'+n);
+  activePage.classList.add('active');
+  document.getElementById('pageCounter').textContent = n + ' / ' + totalPages;
+  document.getElementById('prevBtn').style.visibility = (n===1) ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').style.visibility = (n===totalPages) ? 'hidden' : 'visible';
+  playClick();
+  activePage.querySelectorAll('.neon-text').forEach(typewriteElement);
+  if(n === 2){
+    playGiftEffect();
+  }
+}
+
+/* ---------- Confetti (congratulations effect) ---------- */
+const confettiCanvas = document.getElementById('confettiCanvas');
+const cctx = confettiCanvas.getContext('2d');
+function resizeConfetti(){
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+resizeConfetti();
+window.addEventListener('resize', resizeConfetti);
+
+let confettiParticles = [];
+function fireConfetti(count){
+  const colors = ['#ff4fd8','#ffd1ec','#ff8ae2','#ffffff','#ff2fc9'];
+  for(let i=0;i<count;i++){
+    confettiParticles.push({
+      x: Math.random()*confettiCanvas.width,
+      y: -20,
+      r: Math.random()*6+4,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      speed: Math.random()*3+2,
+      drift: Math.random()*2-1,
+      angle: Math.random()*Math.PI*2,
+      spin: Math.random()*0.2-0.1,
+      life: 0
+    });
+  }
+}
+function confettiLoop(){
+  cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiParticles = confettiParticles.filter(p => p.y < confettiCanvas.height + 30 && p.life < 400);
+  confettiParticles.forEach(p=>{
+    cctx.save();
+    cctx.translate(p.x,p.y);
+    cctx.rotate(p.angle);
+    cctx.fillStyle = p.color;
+    cctx.fillRect(-p.r/2,-p.r/2,p.r,p.r);
+    cctx.restore();
+    p.y += p.speed;
+    p.x += p.drift;
+    p.angle += p.spin;
+    p.life++;
+  });
+  requestAnimationFrame(confettiLoop);
+}
+confettiLoop();
+function goPage(dir){
+  const next = currentPage + dir;
+  if(next < 1 || next > totalPages) return;
+  currentPage = next;
+  showPage(currentPage);
+}
+showPage(currentPage);
+
+document.getElementById('giftPhoto1').addEventListener('click', function(){
+  openModal('giftModal');
+  playGiftEffect();
+});
+document.getElementById('giftPhoto2').addEventListener('click', function(){
+  openModal('mommyModal');
+  playGiftEffect();
+});
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+
+function playClick(){
+  if(!soundOn) return;
+  const s = document.getElementById('clickSound');
+  s.currentTime = 0;
+  s.play().catch(()=>{});
+}
+function playGiftEffect(){
+  fireConfetti(120);
+  burstHearts(25);
+  if(!soundOn) return;
+  const s = document.getElementById('giftSound');
+  s.currentTime = 0;
+  s.play().catch(()=>{});
+}
+document.getElementById('soundToggle').addEventListener('click', function(){
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '🔊' : '🔇';
+  const bg = document.getElementById('bgMusic');
+  if(soundOn){ bg.play().catch(()=>{}); } else { bg.pause(); }
+});
+
+document.getElementById('startScreen').addEventListener('click', function(){
+  const bg = document.getElementById('bgMusic');
+  if(soundOn){ bg.play().catch(()=>{}); }
+  document.getElementById('startScreen').classList.add('hidden');
+}, {once:true});
+
+function burstHearts(count){
+  const stage = document.getElementById('stage');
+  const symbols = ['💗','💕','💖','💓','❤','💞','🎂'];
+  for(let i=0;i<count;i++){
+    const h = document.createElement('div');
+    h.className = 'heart-fx';
+    h.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    h.style.left = (Math.random()*90+5) + '%';
+    h.style.animationDuration = (4 + Math.random()*3) + 's';
+    h.style.fontSize = (1 + Math.random()*1.4) + 'em';
+    stage.appendChild(h);
+    setTimeout(()=>h.remove(), 8000);
+  }
+}
+setInterval(()=>burstHearts(2), 1400);
+</script>
+
+</body>
+</html>
